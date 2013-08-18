@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>画报-淘客管理</title>
+</head>
+<body>
+<form action="/admin/taoke_manager_remove" method="post">
+	<table border='1'>
+		<tr>
+			<td align='center'> </td>
+			<td align='center'><strong>淘客名称</strong></td>
+			<td align='center'><strong>描述</strong></td>
+		</tr>
+		
+		{% for tk in taoke_list %}
+		<tr>
+			<td><input type="radio" name="id" value="{{tk.id}}"/></td>
+			<td>{{tk.taokeName}}</td>
+			<td>{{tk.detail}}</td>
+		</tr>
+		{% endfor %}
+		
+	</table>
+	<input type="submit" value="删除">
+</form>
+	<br>
+	{% if form.errors %}
+		<p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+        {% for error in form.errors %}
+            <li><strong>{{ error }}</strong></li>
+        {% endfor %}
+	{% endif %}
+	<br>
+	<form action="/admin/taoke_manager" method="post">
+		<table>
+		{{ form.as_table }}
+		<tr>	
+      		<td ><input type="submit" value="提交"></td>
+      		<td ><a href="./">返回</a></td>
+      	</tr>
+		</table>
+    </form>
+</body>
+</html>

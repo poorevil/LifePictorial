@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>桃小仙-软件推荐管理</title>
+</head>
+<body>
+<form action="/admin/apps_manager_remove" method="post">
+	<table border='1'>
+		<tr>
+			<td align='center'> </td>
+			<td align='center'><strong>软件名称</strong></td>
+			<td align='center'><strong>软件描述</strong></td>
+			<td align='center'><strong>淘客账号</strong></td>
+			<td align='center'><strong>淘客api接口</strong></td>
+		</tr>
+		
+		{% for app in app_list %}
+		<tr>
+			<td><input type="radio" name="id" value="{{app.id}}"/></td>
+			<td>{{app.name}}</td>
+			<td>{{app.detail}}</td>
+			<td>{{app.taokeAccount.taokeName}}</td>
+			<td>{{app.taobaoApiDetail.appKey}}</td>
+		</tr>
+		{% endfor %}
+		
+	</table>
+	<input type="submit" value="删除">
+</form>
+	<br>
+	{% if form.errors %}
+		<p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+        {% for error in form.errors %}
+            <li><strong>{{ error }}</strong></li>
+        {% endfor %}
+	{% endif %}
+	<br>
+	<form action="" method="post">
+		<table>
+		{{ form.as_table }}
+      	<tr>	
+      		<td ><input type="submit" value="提交"></td>
+      		<td ><a href="./">返回</a></td>
+      	</tr>
+		</table>
+    </form>
+</body>
+</html>

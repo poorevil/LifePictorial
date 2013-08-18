@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>画报-后台管理</title>
+
+<script language="javascript">
+	function aa(str){
+		appcode = document.getElementById("appcode");
+		window.location = (str + "?appcode=" + appcode.value);	
+	}
+</script>
+</head>
+<body>
+	<select id="appcode">
+		{% for app in app_list %}
+			<option value="{{app.id}}">{{app.name}}</option>
+		{% endfor %}
+	</select>
+
+	<ul>
+		<!--li><a href="javascript:aa('shoprecommend_manager')">首页轮播推荐</a></li>
+		<li><a href="javascript:aa('conditionrecommend_manager')">首页分块推荐</a></li>
+		<li><a href="javascript:aa('caterecommend_manager')">类目推荐</a></li>
+		<li><a href="javascript:aa('keywordrecommend_manager')">关键字推荐</a></li>
+		<li><a href="javascript:aa('apprecommend_manager')">软件推荐</a></li -->
+		<li><a href="javascript:aa('ads_manager')">广告管理</a></li>
+	</ul>
+	<hr/>
+	<ul>
+		<li><a href="apps_manager">客户端管理</a></li>
+		<li><a href="taoke_manager">淘客账号管理</a></li>
+		<li><a href="taokeapi_manager">淘客api管理</a></li>
+		
+	</ul>
+</body>
+</html>
