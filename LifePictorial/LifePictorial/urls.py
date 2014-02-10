@@ -6,9 +6,13 @@ from django.contrib.auth.views import login, logout
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+import os
+
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
+
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),"..")) 
 
 urlpatterns = patterns('',
     # Examples:
@@ -34,6 +38,11 @@ urlpatterns = patterns('',
     (r'^admin/taoke_manager_remove$', 'admin.views.taoke_manager_remove'),
     (r'^admin/taokeapi_manager$', 'admin.views.taokeapi_manager'),
     (r'^admin/taokeapi_manager_remove$', 'admin.views.taokeapi_manager_remove'),
+    (r'^admin/error_page$', 'admin.views.error_page'),
+    (r'^admin/taokeitem_manager$', 'admin.views.taokeitem_manager'),
+    (r'^admin/taokeitem_manager_sort$', 'admin.views.taokeitem_manager_sort'),
+    
+    
     
     
     (r'^interface/ad$', 'interface.views.ad_interface'),
@@ -45,7 +54,8 @@ urlpatterns = patterns('',
     (r'^interface/picdetail_album_pagination$', 'interface.views.picdetail_album_pagination'),
     (r'^interface/runtime_param$', 'interface.views.runtime_param'),
     
-    
+    (r'^(?P<path>.*)$', 'django.views.static.serve'
+     ,{'document_root': PROJECT_PATH+'/LifePictorial/static', 'show_indexes': False}),
     
 )
 

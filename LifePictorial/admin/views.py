@@ -2,7 +2,7 @@
 
 from django.shortcuts import render_to_response
 #from django.contrib import auth
-from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail
+from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail
 from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailForm,TaokeAccountForm
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -79,29 +79,34 @@ def ads_manager(request):
     
     form = None
     appcode = request.GET.get('appcode','')
-    adver_list = Adver.objects.filter(app=App(id=appcode)).order_by('order')
     
-    if request.method == 'POST' :
-        form = AdverManagerForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            adver = Adver(title=cd['title'],
-                          picUrl=cd['picUrl'],
-                          adType=cd['adType'],
-                          adIdentifier=cd['adIdentifier'],
-                          order=cd['order'],
-                          app=App.objects.get(id=cd['app']))
-            
-            adver.save()
-            
-            return HttpResponseRedirect('/admin/ads_manager?appcode=%s'%appcode)
+    if len(appcode) >0:
+        adver_list = Adver.objects.filter(app=App(id=appcode)).order_by('order')
+        
+        if request.method == 'POST' :
+            form = AdverManagerForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                adver = Adver(title=cd['title'],
+                              picUrl=cd['picUrl'],
+                              adType=cd['adType'],
+                              adIdentifier=cd['adIdentifier'],
+                              order=cd['order'],
+                              app=App.objects.get(id=cd['app']))
+                
+                adver.save()
+                
+                return HttpResponseRedirect('/admin/ads_manager?appcode=%s'%appcode)
+        
+        if form is None:
+            form = AdverManagerForm(initial={'app': appcode})
+        
+        dict = {'appcode':appcode,'adver_list':adver_list,'form':form}
+        
+        return render_to_response('admin/templates/admin_advert_manager.html',dict)
     
-    if form is None:
-        form = AdverManagerForm(initial={'app': appcode})
-    
-    dict = {'appcode':appcode,'adver_list':adver_list,'form':form}
-    
-    return render_to_response('admin/templates/admin_advert_manager.html',dict)
+    else:
+        return HttpResponseRedirect('/admin/error_page')
     
     
 def ads_manager_remove(request):
@@ -183,4 +188,57 @@ def taokeapi_manager_remove(request):
         
     return HttpResponseRedirect('/admin/taokeapi_manager')
     
+def error_page(request):
+    '''错误页'''
+    #TODO:临时错误页
+    return render_to_response('admin/templates/error_page.html')
+
+
+@login_required(login_url='/admin/login')
+def taokeitem_manager(request):
+    ''' 用于添加淘客url '''
     
+    appcode = request.GET.get('appcode','')
+    
+    if len(appcode) >0:
+        
+        
+#         if request.method == 'POST' :
+#             form = AdverManagerForm(request.POST)
+#             if form.is_valid():
+#                 cd = form.cleaned_data
+#                 adver = Adver(title=cd['title'],
+#                               picUrl=cd['picUrl'],
+#                               adType=cd['adType'],
+#                               adIdentifier=cd['adIdentifier'],
+#                               order=cd['order'],
+#                               app=App.objects.get(id=cd['app']))
+#                  
+#                 adver.save()
+#                  
+#                 return HttpResponseRedirect('/admin/ads_manager?appcode=%s'%appcode)
+        
+        customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
+        
+        dict = {'appcode':appcode,'customItemList':customItemList}
+        
+        return render_to_response('admin/templates/taokeitem_manager.html',dict)
+        
+    else:
+        return HttpResponseRedirect('/admin/error_page')
+    
+def taokeitem_manager_sort(request):
+    ''' 用于添加淘客url '''
+    
+    appcode = request.GET.get('appcode','')
+    
+    if len(appcode) >0:
+        
+        customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
+        
+        dict = {'appcode':appcode,'customItemList':customItemList}
+        
+        return render_to_response('admin/templates/taokeitem_sort.html',dict)
+        
+    else:
+        return HttpResponseRedirect('/admin/error_page')

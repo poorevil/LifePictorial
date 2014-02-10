@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>画报-淘客链接管理</title>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script> -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script src="/javascripts/jquery.gridly.js" type="text/javascript"></script>
+<link href="/stylesheets/jquery.gridly.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+  .gridly {
+    position: relative;
+    width: 960px;
+  }
+  .brick.small {
+    width: 140px;
+    height: 140px;
+  }
+  .brick.large {
+    width: 300px;
+    height: 300px;
+  }
+</style>
+
+</head>
+<body>
+
+
+	<div class="gridly">
+		{% for item in customItemList %}
+	  	<div class="brick small">
+	  		<div><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></div>
+	  		<div>{{item.taoke_title}}</div>
+	  	</div>
+	  	{% endfor %}
+
+	</div>
+
+	<script type="text/javascript">
+		var reordering = function($elements) {
+		  // Called before the drag and drop starts with the elements in their starting position.
+		};
+
+		var reordered = function($elements) {
+		  // Called after the drag and drop ends with the elements in their ending position.
+
+		  alert($elements.length);
+		  
+		  for (var i = 0; i < $elements.length; i++) {
+		  	alert($elements[i]);
+		  };
+		};
+
+		$('.gridly').gridly({
+			base: 60, // px 
+			gutter: 20, // px
+			columns: 9,
+			callbacks: { reordering: reordering , reordered: reordered }
+		});
+
+	  	
+
+		// $('.wall .bricks').gridly({
+		//   callbacks: { reordering: reordering , reordered: reordered }
+		// });
+
+	</script>
+	
+</body>
+</html>

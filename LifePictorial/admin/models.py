@@ -47,7 +47,13 @@ class PicDetail(models.Model,JSONEncoder):
     taoke_num_iid   = models.CharField(max_length=50, blank=True, null=True)
     taoke_title     = models.CharField(max_length=200, blank=True, null=True)
     taoke_price     = models.CharField(max_length=50, blank=True, null=True)
-    pic_desc     = models.CharField(max_length=800, blank=True, null=True)
+    pic_desc        = models.CharField(max_length=800, blank=True, null=True)
+    
+    #2014-02-10 added
+    taoke_url       = models.CharField(max_length=500, blank=True, null=True)   #淘客链接
+    custom_tag      = models.IntegerField(null=True,blank=True)                 #手动添加标记 1，手动添加 0、空，自动添加
+    order           = models.IntegerField()                                     #排序
+    state           = models.IntegerField(default=1)                            #状态，1，发布 0，待发布
     
     def __unicode__(self):
         return self.pic_path;
@@ -69,6 +75,8 @@ class PicDetail(models.Model,JSONEncoder):
             "taoke_num_iid": obj.taoke_num_iid,
             "taoke_title": obj.taoke_title,
             "taoke_price": obj.taoke_price,
+            "taoke_url": obj.taoke_url,
+            "custom_tag": obj.custom_tag
         }
     
 class TaokeAccount(models.Model,JSONEncoder):

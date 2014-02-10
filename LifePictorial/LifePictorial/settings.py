@@ -18,7 +18,7 @@ DATABASES = {
         'NAME': 'lifepictorial',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '123456',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '3306',                      # Set to empty string for default.
     }
@@ -70,9 +70,9 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/LifePictorial/static/'
 
-PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))    #os.path.abspath(os.path.dirname(__file__))
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -118,7 +118,9 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "/Volumes/disk/evil/Documents/workspace/LifePictorial/LifePictorial"
+#     "/Volumes/disk/evil/Documents/workspace/LifePictorial/LifePictorial"
+    
+    PROJECT_PATH
 )
 
 INSTALLED_APPS = (

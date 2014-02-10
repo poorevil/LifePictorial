@@ -1,0 +1,11 @@
+===============
+new add logs：
+===============
+
+2014-02-10：
+
+ALTER TABLE `lifepictorial`.`admin_picdetail` 
+ADD COLUMN `custom_tag` INT NULL DEFAULT 0 AFTER `pic_desc`,
+ADD COLUMN `order` INT NULL DEFAULT 9999999 AFTER `custom_tag`,
+ADD COLUMN `taoke_url` VARCHAR(500) NULL AFTER `order`,
+ADD COLUMN `state` INT NULL DEFAULT 1 AFTER `taoke_url`;

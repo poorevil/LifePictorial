@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>画报-淘客链接管理</title>
+
+<style type="text/css" media="screen">
+.title{ max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+</style>
+
+</head>
+<body>
+
+	<table border='1'>
+		<tr>
+			<td align='center'> </td>
+			<td align='center'><strong>宝贝图片</strong></td>
+			<td align='center'><strong>宝贝id</strong></td>
+			<td align='center'><strong>宝贝名称</strong></td>
+			<td align='center'><strong>发布状态</strong></td>
+			<td align='center'><strong>宝贝详情</strong></td>
+			<td align='center'><strong>排序</strong></td>
+			<td align='center'><strong>所属分类</strong></td>
+		</tr>
+		
+		{% for item in customItemList %}
+		<tr>
+			<td><input type="radio" name="id" value="{{item.id}}"/></td>
+			<td><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
+			<td>{{item.taoke_num_iid}}</td>
+			<td>{{item.taoke_title}}</td>
+			<td>{{item.state}}</td>
+			<td><a class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
+			<td>{{item.order}}</td>
+			<td>{{item.categoary.title}}</td>
+		</tr>
+		{% endfor %}
+		
+	</table>
+	
+</body>
+</html>
