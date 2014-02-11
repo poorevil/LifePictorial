@@ -60,7 +60,7 @@
 				<div class="col-md-4 col-sm-4">
 					<input type="text" class="form-control" id="num_iid" name="num_iid" placeholder="宝贝id"/>
 				</div>
-				<button type="button" id="submitBtn" class="btn btn-link">抓取</button>
+				<button type="button" id="fetchBtn" class="btn btn-link">抓取</button>
 			</div>
 
 			<div class="form-group">
@@ -127,6 +127,54 @@
 		
 	</table> -->
 
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+
+
+	$(document).ready(function(){
+		//绑定按钮点击事件
+		$("#fetchBtn").click(function(){
+			var _nAjaxTimeout = 5 * 10000;
+			//获取登录结果，长连接
+			
+			alert("1111");
+			$.ajax({
+				type: "GET",
+				url:"/admin/taokeitem_manager_fetch_item_detail/"+$('#num_iid').val()+"/",
+				dataType: "json",
+				cache: false,
+				timeout: _nAjaxTimeout,
+				success: function(data, textStatus, jqXHR) {
+					// alert(eval(data["result_code"])+data["msg"]);
+					// alert(textStatus);
+					// alert(eval(jqXHR));
+
+					switch(data["result_code"]){
+						case 208://get result！！
+							// alert("result_code: "+eval(data["result_code"])+"     msg: "+data["msg"]);
+
+							location.href = "/regist/bindAccount/"+uuid+"/";
+
+							break;
+						
+						default:
+							alert("result_code: "+eval(data["result_code"])+"     msg: "+data["msg"]);
+							break;
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(textStatus);
+					
+				}
+			});
+		});
+	});
+
+	</script>
 	
 </body>
 </html>

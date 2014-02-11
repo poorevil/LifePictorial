@@ -291,8 +291,9 @@ def taokeitem_manager_fetch_item_detail(request,num_iid):
     try:
         f= req.getResponse()
         print(f)
+        return HttpResponse(f)
     except Exception,e:
         print(e)
     
-    return HttpResponse("ok")
+    return HttpResponse("{'result_code':400}")
 
