@@ -7,8 +7,22 @@ from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailFo
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
+import json
+
+import top.api
+
 from django.http.response import HttpResponse
 
+'''
+这边可以设置一个默认的appkey和secret，当然也可以不设置
+注意：默认的只需要设置一次就可以了
+'''
+'''
+可以在运行期替换掉默认的appkey和secret的设置
+a.set_app_info(top.appinfo("appkey","*******"))
+'''
+# top.setDefaultAppInfo("21589744", "29029858003d0142d25aeed24c6e5e5b")
+top.setDefaultAppInfo("21125417", "2b4fc27525fd9a225cdedcbb0a6862a7")
 #def login(request):
 #    
 #    username = request.POST.get('username','')
@@ -226,19 +240,59 @@ def taokeitem_manager(request):
         
     else:
         return HttpResponseRedirect('/admin/error_page')
-    
+
+@login_required(login_url='/admin/login')
 def taokeitem_manager_sort(request):
     ''' 用于添加淘客url '''
-    
     appcode = request.GET.get('appcode','')
     
     if len(appcode) >0:
-        
         customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
-        
         dict = {'appcode':appcode,'customItemList':customItemList}
         
         return render_to_response('admin/templates/taokeitem_sort.html',dict)
-        
     else:
         return HttpResponseRedirect('/admin/error_page')
+    
+@login_required(login_url='/admin/login')
+def taokeitem_manager_update_order(request,appcode):
+    ''' 修改排序 '''
+    #[{"item_id":"3","currOrder":0},{"item_id":"2","currOrder":2},{"item_id":"5","currOrder":3}]
+    jsonStr = request.POST.get('jsonStr','');
+    print jsonStr;
+    
+    jsonArray = json.loads(jsonStr)
+    
+    for dict in jsonArray:
+        picDetail = PicDetail.objects.get(id=dict["item_id"])
+        picDetail.order = dict["currOrder"]
+        picDetail.save()
+    
+    return HttpResponse("ok")
+
+@login_required(login_url='/admin/login')
+def taokeitem_manager_add_item(request):
+    ''' 添加宝贝信息 '''
+    
+    return render_to_response('admin/templates/taokeitem_manager_fetch_item.html')
+
+@login_required(login_url='/admin/login')
+def taokeitem_manager_fetch_item_detail(request,num_iid):
+    ''' 抓取宝贝信息 '''
+    
+#     a = top.api.ItemGetRequest()
+#     a.fields="num_iid,title"
+#     a.num_iid=num_iid
+
+    req=top.api.TbkItemsDetailGetRequest()
+    req.fields="num_iid,seller_id,nick,title,price,volume,pic_url,item_url,shop_url"
+    req.num_iids=num_iid
+    
+    try:
+        f= req.getResponse()
+        print(f)
+    except Exception,e:
+        print(e)
+    
+    return HttpResponse("ok")
+

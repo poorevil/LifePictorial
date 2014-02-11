@@ -32,7 +32,9 @@
 	<div class="gridly">
 		{% for item in customItemList %}
 	  	<div class="brick small">
-	  		<div>{{item.id}}</div>
+	  		<div id="item_id" style="display:none">{{item.id}}</div>
+	  		<div id="item_order" style="display:none">{{item.order}}</div>
+
 	  		<div><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></div>
 	  		<div>{{item.taoke_title}}</div>
 	  	</div>
@@ -40,19 +42,35 @@
 
 	</div>
 
+	<div id="updateOrder">
+		<input id="updateBtn" type="button" value="update"/>
+	</div>
+
 	<script type="text/javascript">
+		var need2UpdateArray = new Array();
+
 		var reordering = function($elements) {
 		  // Called before the drag and drop starts with the elements in their starting position.
+		  // alert($elements.length);
 		};
 
 		var reordered = function($elements) {
-		  // Called after the drag and drop ends with the elements in their ending position.
+		  	// Called after the drag and drop ends with the elements in their ending position.
+		  	need2UpdateArray = new Array();
+			$elements.each(function() {
+			    // alert($(this).find('#item_id').text() + "  " + $(this).find('#item_order').text() + "  " + $(this).data('position'));
+			    var itemId = $(this).find('#item_id').text();
+			    var itemOldOrder = parseInt($(this).find('#item_order').text());
+			    var itemCurrOrder = parseInt($(this).data('position'));
 
-		  alert($elements.length);
+			    if(itemOldOrder != itemCurrOrder){
+			    	var item = {};
+			    	item['item_id'] = itemId;
+			    	item['currOrder']= itemCurrOrder;
+			    	need2UpdateArray.push(item);
+			    }
 
-		  for (var i = 0; i < $elements.length; i++) {
-		  	alert($elements[i]);
-		  };
+			});
 		};
 
 		$('.gridly').gridly({
@@ -63,10 +81,47 @@
 		});
 
 	  	
-
-		// $('.wall .bricks').gridly({
-		//   callbacks: { reordering: reordering , reordered: reordered }
-		// });
+		$(document).ready(function(){
+			//绑定按钮点击事件
+			$("#updateBtn").click(function(){
+				var jqxhr = $.post("/admin/taokeitem_manager_update_order/"+{{appcode}}+"/", 
+						"jsonStr="+JSON.stringify(need2UpdateArray),// $("#registForm").serialize(),
+						function(data,textStatus, jqXHR) {
+							alert(textStatus);
+							//服务器返回请求结果
+							switch(data["result_code"]){
+								case 208://get result！！
+									// //隐藏进度条，显示绑定成功提示
+									// // alert("result_code: "+eval(data["result_code"])+"     msg: "+data["msg"]);
+									// $("#waitingModal").modal("hide");
+									// $("h4#resultModalLabel").text("绑定成功");
+									// $("#resultModal").modal("show");
+									break;
+								case 308://get result！！
+									// //隐藏进度条，显示绑定成功提示
+									// // alert("result_code: "+eval(data["result_code"])+"     msg: "+data["msg"]);
+									// $("#waitingModal").modal("hide");
+									// $("h4#resultModalLabel").text("该帐号已绑定成功！");
+									// $("#resultModal").modal("show");
+									break;
+								default:
+									// //TODO:隐藏进度条，显示绑定失败提示，请重试
+									// $("#waitingModal").modal("hide");
+									// $("h4#resultModalLabel").text("绑定失败，请重试");
+									// $("#resultModal").modal("show");
+									break;
+							}
+						});
+				//请求失败
+				jqxhr.error(function() { 
+					alert("error"); 
+					// //隐藏进度条，显示绑定失败提示，请重试
+					// $("#waitingModal").modal("hide");
+					// $("h4#resultModalLabel").text("绑定失败，请重试");
+					// $("#resultModal").modal("show");
+				});
+			});
+		});
 
 	</script>
 	
