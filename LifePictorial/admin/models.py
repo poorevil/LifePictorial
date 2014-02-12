@@ -43,7 +43,7 @@ class PicDetail(models.Model,JSONEncoder):
     albunm_name     = models.CharField(max_length=500, blank=True, null=True)
     albunm_id       = models.CharField(max_length=50, blank=True, null=True)
     user_id         = models.CharField(max_length=50, blank=True, null=True)
-    time            = models.DateTimeField(blank=True, null=True)
+    time            = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     taoke_num_iid   = models.CharField(max_length=50, blank=True, null=True)
     taoke_title     = models.CharField(max_length=200, blank=True, null=True)
     taoke_price     = models.CharField(max_length=50, blank=True, null=True)

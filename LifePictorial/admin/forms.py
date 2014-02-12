@@ -1,7 +1,7 @@
 #-*- coding:UTF-8 -*-
 
 from django import forms
-from admin.models import App,TaokeAccount,TaokeAccount,TaobaoApiDetail
+from admin.models import App,TaokeAccount,TaokeAccount,TaobaoApiDetail,Categoary
  
  
 class AppsManagerEditForm(forms.Form):
@@ -48,5 +48,15 @@ class TaobaoApiDetailForm(forms.Form):
 class TaokeAccountForm(forms.Form):
     taokeName     = forms.CharField(label='淘客账号名',max_length=100)                                           #name
     detail        = forms.CharField(label='描述',max_length=150,required=False,widget=forms.Textarea)      #detail
+    
+class TaokeItemAddForm(forms.Form):
+    num_iid         = forms.CharField(label='宝贝id',max_length=50)  
+    pic_path        = forms.CharField(label='宝贝图片地址',max_length=500)  
+    taoke_title     = forms.CharField(label='宝贝名称',max_length=200) 
+    taoke_price     = forms.CharField(label='宝贝价格',max_length=200) 
+    pic_desc        = forms.CharField(label='宝贝描述',required=False,max_length=500) 
+    taoke_url       = forms.CharField(label='宝贝详情地址',max_length=500) 
+    categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
+                                        ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
     
     
