@@ -21,8 +21,10 @@
   }
   .brick.small {
     width: 140px;
-    height: 140px;
+    height: 180px;
     text-align: center;
+    border: 1px solid #e5e5e5;
+    background-color: #cccccc;
   }
   .brick.large {
     width: 300px;
@@ -30,7 +32,7 @@
   }
   
   .title{ 
-  	max-height:50px;
+  	max-height:35px;
   	max-width:120px; 
   	overflow:hidden; 
   	/*text-overflow:ellipsis;*/
@@ -40,9 +42,10 @@
     margin-top: 5px;
   }
 
-  .img_class{
-  	border: 1px solid #e5e5e5;
-
+  .img-holder{
+  	overflow: hidden;
+  	width: 100%;
+    height: 100%;
   }
 </style>
 
@@ -66,9 +69,9 @@
 				  	<div class="brick small">
 				  		<div id="item_id" style="display:none">{{item.id}}</div>
 				  		<div id="item_order" style="display:none">{{item.order}}</div>
+				  		<div style="width:138px;height:140px"><img class="img-holder" src='{{item.pic_path}}_160x160.jpg' /></div>
+				  		<div class="title" title="{{item.taoke_title}}">{{item.taoke_title}}</div>
 
-				  		<div class="img_class"><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></div>
-				  		<div class="title">{{item.taoke_title}}</div>
 				  	</div>
 				  	{% endfor %}
 

@@ -213,30 +213,38 @@ def taokeitem_manager(request):
     ''' 用于添加淘客url '''
     
     appcode = request.GET.get('appcode','')
-    
     if len(appcode) >0:
-        
-        
-#         if request.method == 'POST' :
-#             form = AdverManagerForm(request.POST)
-#             if form.is_valid():
-#                 cd = form.cleaned_data
-#                 adver = Adver(title=cd['title'],
-#                               picUrl=cd['picUrl'],
-#                               adType=cd['adType'],
-#                               adIdentifier=cd['adIdentifier'],
-#                               order=cd['order'],
-#                               app=App.objects.get(id=cd['app']))
-#                  
-#                 adver.save()
-#                  
-#                 return HttpResponseRedirect('/admin/ads_manager?appcode=%s'%appcode)
-        
-        customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
-        
-        dict = {'appcode':appcode,'customItemList':customItemList}
-        
-        return render_to_response('admin/templates/taokeitem_manager.html',dict)
+        if request.method == 'POST' :
+            idArray = request.POST.getlist("ids")
+            oper = request.POST.get("oper")         #操作类型，submit:上架 down:下架 del:删除
+            print idArray
+            
+            
+            
+            if cmp(oper,"submit") == 0 :
+                for idStr in idArray:
+                    picDetail = PicDetail.objects.get(id=idStr)
+                    picDetail.state = 1
+                    picDetail.save()
+            elif cmp(oper,"down") == 0 :
+                for idStr in idArray:
+                    picDetail = PicDetail.objects.get(id=idStr)
+                    picDetail.state = 0
+                    picDetail.save()
+            elif cmp(oper,"del") == 0 :
+                for idStr in idArray:
+                    picDetail = PicDetail.objects.get(id=idStr)
+                    picDetail.delete()
+            else:
+                return HttpResponseRedirect('/admin/error_page')
+            
+            return HttpResponseRedirect('/admin/taokeitem_manager?appcode=%s'%appcode)
+        else:
+            customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
+            
+            dict = {'appcode':appcode,'customItemList':customItemList}
+            
+            return render_to_response('admin/templates/taokeitem_manager.html',dict)
         
     else:
         return HttpResponseRedirect('/admin/error_page')

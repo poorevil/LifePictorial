@@ -14,6 +14,11 @@ body {
     margin-top: 20px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+.center-block{
+  text-align: center;
+  vertical-align: middle;
+}
 </style>
 
 </head>
@@ -31,32 +36,46 @@ body {
 				</div>
 			</div>
 			<div class="col-md-9" role="main">
-				<table border='1'>
-					<tr>
-						<td align='center'> </td>
-						<td align='center'><strong>宝贝图片</strong></td>
-						<td align='center'><strong>宝贝id</strong></td>
-						<td align='center'><strong>宝贝名称</strong></td>
-						<td align='center'><strong>发布状态</strong></td>
-						<td align='center'><strong>宝贝详情</strong></td>
-						<td align='center'><strong>排序</strong></td>
-						<td align='center'><strong>所属分类</strong></td>
-					</tr>
-					
-					{% for item in customItemList %}
-					<tr>
-						<td><input type="radio" name="id" value="{{item.id}}"/></td>
-						<td><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
-						<td>{{item.taoke_num_iid}}</td>
-						<td>{{item.taoke_title}}</td>
-						<td>{{item.state}}</td>
-						<td><a class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
-						<td>{{item.order}}</td>
-						<td>{{item.categoary.title}}</td>
-					</tr>
-					{% endfor %}
-					
-				</table>
+				<form action="/admin/taokeitem_manager?appcode={{appcode}}" name="taokeItemListForm" method="post">
+					<input type="hidden" name="oper" id="oper"/>
+				<div class="panel panel-default">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+						<button type="button" id="submitBtn" class="btn btn-primary">发布</button>
+						<button type="button" id="downBtn" class="btn btn-primary">下架</button>
+						<button type="button" id="delBtn" class="btn btn-danger">删除</button>
+					</div>
+					<!-- Table -->
+					<table class="table table-hover table-condensed" style="vertical-align: center">
+						<thead>
+						<tr>
+							<td ><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
+							<td style="text-align: center;vertical-align: middle;"><div class="center-block"><strong>宝贝图片</strong></div></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>宝贝id</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>宝贝名称</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>发布状态</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>宝贝详情</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>排序</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>所属分类</strong></td>
+						</tr>
+						</thead>
+						<tbody>
+						{% for item in customItemList %}
+						<tr onclick="selectAction(this)">
+							<td style="text-align: center;vertical-align: middle;"><input type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
+							<td style="text-align: center;vertical-align: middle;"><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
+							<td style="text-align: center;vertical-align: middle;">{{item.taoke_num_iid}}</td>
+							<td style="text-align: left;vertical-align: middle;">{{item.taoke_title}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
+							<td style="text-align: center;vertical-align: middle;"><a onclick="event.cancelBubble=true;" class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
+							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				</form>
 			</div>
 
 
@@ -65,5 +84,65 @@ body {
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 	<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$("#selectAllBtn").click(function(){
+			if($("#selectAllBtn").html()=="全选"){
+				$("input#ids").each(function(){
+					// alert($(this).prop('checked'));
+						$(this).prop('checked',true);
+				});
+				$("#selectAllBtn").html("取消");
+			}else{
+				$("input#ids").each(function(){
+					// alert($(this).prop('checked'));
+						$(this).prop('checked',false);
+				});
+				$("#selectAllBtn").html("全选");
+			}
+		});
+
+		var hasChecked = function(){
+			var hasChecked = false;
+			$("input#ids").each(function(){
+				// alert($(this).prop('checked'));
+				hasChecked |= $(this).prop('checked');
+			});
+
+			return hasChecked;
+		};
+
+		$("#submitBtn").click(function(){
+			if (hasChecked()) {
+				$("input#oper").val("submit");
+				$("form").submit();
+			}else{
+				alert("请选择需要发布的对象");
+			}
+		});
+
+		$("#downBtn").click(function(){
+			if (hasChecked()) {
+				$("input#oper").val("down");
+				$("form").submit();
+			}else{
+				alert("请选择需要下架的对象");
+			}
+		});
+
+		$("#delBtn").click(function(){
+			if (hasChecked()) {
+				$("input#oper").val("del");
+				$("form").submit();
+			}else{
+				alert("请选择需要删除的对象");
+			}
+		});
+
+		var selectAction = function(trObj){
+			// alert(trObj.find("#ids"));
+			var checkboxObj = jQuery(trObj).find("input#ids")
+			checkboxObj.prop('checked',!checkboxObj.prop('checked'));
+		};
+	</script>
 </body>
 </html>
