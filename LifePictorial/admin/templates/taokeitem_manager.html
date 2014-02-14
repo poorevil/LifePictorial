@@ -68,7 +68,7 @@ body {
 						<tbody>
 						{% for item in customItemList %}
 						<tr onclick="selectAction(this)">
-							<td style="text-align: center;vertical-align: middle;"><input type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
+							<td style="text-align: center;vertical-align: middle;"><input onclick="event.cancelBubble=true;" type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
 							<td style="text-align: center;vertical-align: middle;"><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
 							<td style="text-align: center;vertical-align: middle;">{{item.taoke_num_iid}}</td>
 							<td style="text-align: left;vertical-align: middle;">{{item.taoke_title}}</td>

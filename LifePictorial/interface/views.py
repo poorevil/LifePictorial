@@ -47,7 +47,7 @@ def recommend_album(request):
                 page = 0
             
             albumResults = list(PicDetail.objects.raw('''SELECT id, albunm_id ,albunm_name, count(*) as amount 
-                        FROM admin_picdetail where categoary_id=%d group by albunm_id having count(*) > %d 
+                        FROM admin_picdetail where categoary_id=%d and state=1 group by albunm_id having count(*) > %d 
                         order by time desc limit %d offset %d '''%(int(cid),4,pageSize,page*pageSize)))
             
             resultArray = []
