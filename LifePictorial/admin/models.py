@@ -18,6 +18,14 @@ class Categoary(models.Model):
     def __unicode__(self):
         return self.title;
 
+class Albunm(models.Model):
+    id              = models.CharField(max_length=50,primary_key=True)
+    albunm_name     = models.CharField(max_length=200)
+    last_add_time   = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    pic_amount      = models.IntegerField(null=True,blank=True,default=0)
+    order           = models.IntegerField()   
+    state           = models.IntegerField(default=1)                            #状态，1，发布 0，待发布
+
 '''
 CREATE TABLE "pic_detail" 
 ("pid" VARCHAR PRIMARY KEY  NOT NULL , 
@@ -41,7 +49,7 @@ class PicDetail(models.Model,JSONEncoder):
     height           = models.IntegerField(null=True,blank=True)
     categoary       = models.ForeignKey(Categoary)
     albunm_name     = models.CharField(max_length=500, blank=True, null=True)
-    albunm_id       = models.CharField(max_length=50, blank=True, null=True)
+    albunm          = models.ForeignKey(Albunm)#models.CharField(max_length=50, blank=True, null=True)
     user_id         = models.CharField(max_length=50, blank=True, null=True)
     time            = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     taoke_num_iid   = models.CharField(max_length=50, blank=True, null=True)

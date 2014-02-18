@@ -1,7 +1,7 @@
 #-*- coding:UTF-8 -*-
 
 from django import forms
-from admin.models import App,TaokeAccount,TaokeAccount,TaobaoApiDetail,Categoary
+from admin.models import App,TaokeAccount,TaokeAccount,TaobaoApiDetail,Categoary,Albunm
  
  
 class AppsManagerEditForm(forms.Form):
@@ -50,6 +50,11 @@ class TaokeAccountForm(forms.Form):
     detail        = forms.CharField(label='描述',max_length=150,required=False,widget=forms.Textarea)      #detail
     
 class TaokeItemAddForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(TaokeItemAddForm, self).__init__(*args, **kwargs)
+        ''' 更新select ''' 
+        self.fields["albunm_id"].choices = (tuple([p.id, p.albunm_name]) for p in Albunm.objects.order_by('-last_add_time'))
+    
     num_iid         = forms.CharField(label='宝贝id',max_length=50)  
     pic_path        = forms.URLField(label='宝贝图片地址',max_length=500)  
     taoke_title     = forms.CharField(label='宝贝名称',max_length=200) 
@@ -58,5 +63,6 @@ class TaokeItemAddForm(forms.Form):
     taoke_url       = forms.URLField(label='宝贝详情地址',max_length=500) 
     categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
                                         ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
-    
+    albunm_id       = forms.ChoiceField(label='所属图集',widget=forms.Select
+                                        ,choices=tuple(tuple([p.id, p.albunm_name]) for p in Albunm.objects.order_by('-last_add_time'))) 
     

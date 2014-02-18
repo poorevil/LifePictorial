@@ -2,7 +2,7 @@
 
 from django.shortcuts import render_to_response
 #from django.contrib import auth
-from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail
+from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail,Albunm
 from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailForm,TaokeAccountForm,TaokeItemAddForm
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -283,44 +283,13 @@ def taokeitem_manager_add_item(request):
     ''' 添加宝贝信息 '''
     appcode = request.GET.get('appcode','')
     
-    form = None
+#     form = None
 #     taokeapi_list = TaobaoApiDetail.objects.order_by('id')
 #     
     if request.method == 'POST' :
         form = TaokeItemAddForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            
-# pid             = models.CharField(max_length=20,unique=True)   #用于排重
-# pic_path        = models.CharField(max_length=500)
-# width           = models.IntegerField(null=True,blank=True)
-# height           = models.IntegerField(null=True,blank=True)
-# categoary       = models.ForeignKey(Categoary)
-# albunm_name     = models.CharField(max_length=500, blank=True, null=True)
-# albunm_id       = models.CharField(max_length=50, blank=True, null=True)
-# user_id         = models.CharField(max_length=50, blank=True, null=True)
-# time            = models.DateTimeField(blank=True, null=True)
-# taoke_num_iid   = models.CharField(max_length=50, blank=True, null=True)
-# taoke_title     = models.CharField(max_length=200, blank=True, null=True)
-# taoke_price     = models.CharField(max_length=50, blank=True, null=True)
-# pic_desc        = models.CharField(max_length=800, blank=True, null=True)
-# 
-# #2014-02-10 added
-# taoke_url       = models.CharField(max_length=500, blank=True, null=True)   #淘客链接
-# custom_tag      = models.IntegerField(null=True,blank=True)                 #手动添加标记 1，手动添加 0、空，自动添加
-# order           = models.IntegerField()                                     #排序
-# state           = models.IntegerField(default=1)    
-            
-            
-#     num_iid         = forms.CharField(label='宝贝id',max_length=50)  
-#     pic_path        = forms.CharField(label='宝贝图片地址',max_length=500)  
-#     taoke_title     = forms.CharField(label='宝贝名称',max_length=200) 
-#     taoke_price     = forms.CharField(label='宝贝价格',max_length=200) 
-#     pic_desc        = forms.CharField(label='宝贝描述',required=False,max_length=500) 
-#     
-#     
-#     taoke_url       = forms.CharField(label='宝贝详情地址',max_length=500) 
-#     categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
             
             picDetail = PicDetail(pic_path=cd['pic_path'],
                                   pid=time.time(),
@@ -331,16 +300,17 @@ def taokeitem_manager_add_item(request):
                                   pic_desc=cd['pic_desc'],
                                   taoke_url=cd['taoke_url'],
                                   custom_tag=1,
+                                  albunm_id=cd['albunm_id'],
                                   order=0)
              
             picDetail.save()
              
             return HttpResponseRedirect('/admin/taokeitem_manager_add_item?appcode=%s'%appcode)
-    
-    if form is None:
+    else:
         form = TaokeItemAddForm()
     
     dict = {'appcode':appcode,'form':form}
+    
     
     return render_to_response('admin/templates/taokeitem_manager_fetch_item.html',dict)
     
@@ -363,3 +333,17 @@ def taokeitem_manager_fetch_item_detail(request,num_iid):
     
     return HttpResponse("{'result_code':400}")
 
+def taokeitem_manager_add_albunm(request):
+    '''添加图集'''
+    albunm_nameStr = request.POST.get("albunm_name")
+    
+    albunm = Albunm()
+    albunm.id               = time.time()
+    albunm.albunm_name      = albunm_nameStr
+    albunm.pic_amount       = 0
+    albunm.order            = 99999
+    albunm.state            = 0
+    
+    albunm.save()
+    
+    return HttpResponse('''{"result_code":200}''', content_type="application/json")

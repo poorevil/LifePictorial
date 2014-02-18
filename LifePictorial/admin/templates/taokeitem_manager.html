@@ -32,7 +32,7 @@ body {
 	</nav>
 	<div class="container">
     	<div class="row">
-    		<div class="col-md-3">
+    		<div class="col-md-3 col-sm-3">
 				<div class="list-group" style="width:200px" data-spy="affix" data-offset-top="0" role="complementary" >
 				  <a href="#" class="list-group-item active">
 				  	管理列表
@@ -41,7 +41,7 @@ body {
 				  <a href="/admin/taokeitem_manager_sort?appcode={{ appcode }}" class="list-group-item">排序</a>
 				</div>
 			</div>
-			<div class="col-md-9" role="main">
+			<div class="col-md-9 col-sm-9" role="main">
 				<form action="/admin/taokeitem_manager?appcode={{appcode}}" name="taokeItemListForm" method="post">
 					<input type="hidden" name="oper" id="oper"/>
 				<div class="panel panel-default">
@@ -61,6 +61,7 @@ body {
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝名称</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>发布状态</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝详情</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>所属相册</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>排序</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>所属分类</strong></td>
 						</tr>
@@ -71,9 +72,10 @@ body {
 							<td style="text-align: center;vertical-align: middle;"><input onclick="event.cancelBubble=true;" type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
 							<td style="text-align: center;vertical-align: middle;"><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
 							<td style="text-align: center;vertical-align: middle;">{{item.taoke_num_iid}}</td>
-							<td style="text-align: left;vertical-align: middle;">{{item.taoke_title}}</td>
+							<td style="text-align: left;vertical-align: middle;max-width:150px">{{item.taoke_title}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
-							<td style="text-align: center;vertical-align: middle;"><a onclick="event.cancelBubble=true;" class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
+							<td style="text-align: center;vertical-align: middle;max-width:100px"><a onclick="event.cancelBubble=true;" class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
+							<td style="text-align: center;vertical-align: middle;">{{item.albunm.albunm_name}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
 						</tr>
