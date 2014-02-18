@@ -7,7 +7,7 @@ from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailFo
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
-import json,time
+import json,time,datetime
 
 import top.api
 
@@ -291,19 +291,24 @@ def taokeitem_manager_add_item(request):
         if form.is_valid():
             cd = form.cleaned_data
             
-            picDetail = PicDetail(pic_path=cd['pic_path'],
-                                  pid=time.time(),
-                                  categoary_id=cd['categoary_id'],
-                                  taoke_num_iid=cd['num_iid'],
-                                  taoke_title=cd['taoke_title'],
-                                  taoke_price=cd['taoke_price'],
-                                  pic_desc=cd['pic_desc'],
-                                  taoke_url=cd['taoke_url'],
-                                  custom_tag=1,
-                                  albunm_id=cd['albunm_id'],
-                                  order=0)
-             
-            picDetail.save()
+            albunm = Albunm.objects.get(id=cd['albunm_id'])
+            if albunm is not None:
+                picDetail = PicDetail(pic_path=cd['pic_path'],
+                                      pid=time.time(),
+                                      categoary_id=cd['categoary_id'],
+                                      taoke_num_iid=cd['num_iid'],
+                                      taoke_title=cd['taoke_title'],
+                                      taoke_price=cd['taoke_price'],
+                                      pic_desc=cd['pic_desc'],
+                                      taoke_url=cd['taoke_url'],
+                                      custom_tag=1,
+                                      albunm_id=cd['albunm_id'],
+                                      order=0)
+                picDetail.save()
+                
+                albunm.pic_amount += 1
+                albunm.last_add_time = datetime.datetime.today()
+                albunm.save()
              
             return HttpResponseRedirect('/admin/taokeitem_manager_add_item?appcode=%s'%appcode)
     else:

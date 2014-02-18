@@ -53,7 +53,7 @@ class TaokeItemAddForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(TaokeItemAddForm, self).__init__(*args, **kwargs)
         ''' 更新select ''' 
-        self.fields["albunm_id"].choices = (tuple([p.id, p.albunm_name]) for p in Albunm.objects.order_by('-last_add_time'))
+        self.fields["albunm_id"].choices = (tuple([p.id, p.albunm_name]) for p in (Albunm.objects.order_by('-last_add_time')[:20]))
     
     num_iid         = forms.CharField(label='宝贝id',max_length=50)  
     pic_path        = forms.URLField(label='宝贝图片地址',max_length=500)  
@@ -64,5 +64,5 @@ class TaokeItemAddForm(forms.Form):
     categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
                                         ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
     albunm_id       = forms.ChoiceField(label='所属图集',widget=forms.Select
-                                        ,choices=tuple(tuple([p.id, p.albunm_name]) for p in Albunm.objects.order_by('-last_add_time'))) 
+                                        ,choices=tuple(tuple([p.id, p.albunm_name]) for p in (Albunm.objects.order_by('-last_add_time')[:20]))) 
     
