@@ -44,7 +44,10 @@ urlpatterns = patterns('',
     (r'^admin/taokeitem_manager_update_order/(?P<appcode>[\w\d]{0,20})/$', 'admin.views.taokeitem_manager_update_order'),
     (r'^admin/taokeitem_manager_fetch_item_detail/(?P<num_iid>[\w\d]{0,20})/$', 'admin.views.taokeitem_manager_fetch_item_detail'),
     (r'^admin/taokeitem_manager_add_item$', 'admin.views.taokeitem_manager_add_item'),
-    (r'^admin/taokeitem_manager_add_albunm$', 'admin.views.taokeitem_manager_add_albunm'),
+    (r'^admin/albunm_manager_add_albunm$', 'admin.views.albunm_manager_add_albunm'),
+    (r'^admin/albunm_manager$', 'admin.views.albunm_manager'),
+    (r'^admin/albunm_manager_sort$', 'admin.views.albunm_manager_sort'),
+    (r'^admin/albunm_manager_update_order/(?P<appcode>[\w\d]{0,20})/$', 'admin.views.albunm_manager_update_order'),
     
     
     

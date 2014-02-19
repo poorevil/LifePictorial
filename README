@@ -9,3 +9,13 @@ ADD COLUMN `custom_tag` INT NULL DEFAULT 0 AFTER `pic_desc`,
 ADD COLUMN `order` INT NULL DEFAULT 9999999 AFTER `custom_tag`,
 ADD COLUMN `taoke_url` VARCHAR(500) NULL AFTER `order`,
 ADD COLUMN `state` INT NULL DEFAULT 1 AFTER `taoke_url`;
+
+2014-02-19：
+class App(models.Model):
+    #add
+    categoary       = models.ForeignKey(Categoary)
+    
+class Albunm(models.Model):
+	#add
+    categoary       = models.ForeignKey(Categoary)
+    custom_tag      = models.IntegerField(null=True,blank=True)  

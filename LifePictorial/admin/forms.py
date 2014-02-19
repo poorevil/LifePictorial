@@ -66,3 +66,13 @@ class TaokeItemAddForm(forms.Form):
     albunm_id       = forms.ChoiceField(label='所属图集',widget=forms.Select
                                         ,choices=tuple(tuple([p.id, p.albunm_name]) for p in (Albunm.objects.order_by('-last_add_time')[:20]))) 
     
+class AlbunmAddForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(AlbunmAddForm, self).__init__(*args, **kwargs)
+        ''' 更新select ''' 
+        self.fields["categoary_id"].choices = tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id'))
+    
+    albunm_name     = forms.CharField(label='图集名称',max_length=50)  
+    categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
+                                        ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
+    

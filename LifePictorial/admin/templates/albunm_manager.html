@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>画报-淘客链接管理</title>
+
+<!-- 最新 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+<style type="text/css" media="screen">
+.title{ max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+body {
+	background-color: #f1f1f1;
+    margin-top: 20px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding-top: 70px;
+}
+
+.center-block{
+  text-align: center;
+  vertical-align: middle;
+}
+</style>
+
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" style="vertical-align: middle;height:18px" role="navigation">
+		<ol class="breadcrumb" style="padding-top:15px;">
+		  <li><a href="/admin/">主页</a></li>
+		  <li class="active">图集管理</li>
+		</ol>
+	</nav>
+	<div class="container">
+    	<div class="row">
+    		<div class="col-md-3 col-sm-3">
+				<div class="list-group" style="width:200px" data-spy="affix" data-offset-top="0" role="complementary" >
+				  <a href="#" class="list-group-item active">
+				  	图集列表
+				  </a>
+				  <a href="#" class="list-group-item"  data-toggle="modal" data-target="#myModal">添加图集</a>
+				  <a href="/admin/albunm_manager_sort?appcode={{ appcode }}" class="list-group-item">排序</a>
+				</div>
+			</div>
+			<div class="col-md-9 col-sm-9" role="main">
+				<form action="/admin/albunm_manager?appcode={{appcode}}" name="taokeItemListForm" id="taokeItemListForm" method="post">
+					<input type="hidden" name="oper" id="oper"/>
+				<div class="panel panel-default">
+					<!-- Default panel contents -->
+					<div class="panel-heading">
+						<button type="button" id="submitBtn" class="btn btn-primary">发布</button>
+						<button type="button" id="downBtn" class="btn btn-primary">下架</button>
+						<button type="button" id="delBtn" class="btn btn-danger">删除</button>
+					</div>
+					<!-- Table -->
+					<table class="table table-hover table-condensed" style="vertical-align: center">
+						<thead>
+						<tr>
+							<td ><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>名称</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>最后添加时间</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>宝贝数量</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>排序</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>状态</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>类目</strong></td>
+							<td style="text-align: center;vertical-align: middle;">&nbsp;</td>
+						</tr>
+						</thead>
+						<tbody>
+						{% for item in albunmList %}
+						<tr onclick="selectAction(this)">
+							<td style="text-align: center;vertical-align: middle;"><input onclick="event.cancelBubble=true;" type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
+							<td style="text-align: center;vertical-align: middle;">{{item.albunm_name}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.last_add_time}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.pic_amount}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
+							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
+							<td style="text-align: center;vertical-align: middle;">详细</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">新建图集</h4>
+			</div>
+			<form action="#" name="albunmForm" id="albunmForm" method="post" class="form-horizontal" role="form">
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="categoary_id" class="col-sm-2 col-md-2 control-label control-label">图集名称</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="albunm_name" name="albunm_name" placeholder="图集名称"/>
+					</div>
+				</div>
+			</div>
+			</form>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="addAlbunmBtn">Save changes</button>
+			</div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$("#selectAllBtn").click(function(){
+			if($("#selectAllBtn").html()=="全选"){
+				$("input#ids").each(function(){
+					// alert($(this).prop('checked'));
+						$(this).prop('checked',true);
+				});
+				$("#selectAllBtn").html("取消");
+			}else{
+				$("input#ids").each(function(){
+					// alert($(this).prop('checked'));
+						$(this).prop('checked',false);
+				});
+				$("#selectAllBtn").html("全选");
+			}
+		});
+
+		var hasChecked = function(){
+			var hasChecked = false;
+			$("input#ids").each(function(){
+				// alert($(this).prop('checked'));
+				hasChecked |= $(this).prop('checked');
+			});
+
+			return hasChecked;
+		};
+
+		$("#submitBtn").click(function(){
+			if (hasChecked()) {
+				$("input#oper").val("submit");
+				$("form#taokeItemListForm").submit();
+			}else{
+				alert("请选择需要发布的对象");
+			}
+		});
+
+		$("#downBtn").click(function(){
+			if (hasChecked()) {
+				$("input#oper").val("down");
+				$("form#taokeItemListForm").submit();
+			}else{
+				alert("请选择需要下架的对象");
+			}
+		});
+
+		// $("#delBtn").click(function(){
+		// 	if (hasChecked()) {
+		// 		$("input#oper").val("del");
+		// 		$("form").submit();
+		// 	}else{
+		// 		alert("请选择需要删除的对象");
+		// 	}
+		// });
+
+		var selectAction = function(trObj){
+			// alert(trObj.find("#ids"));
+			var checkboxObj = jQuery(trObj).find("input#ids")
+			checkboxObj.prop('checked',!checkboxObj.prop('checked'));
+		};
+
+		//绑定按钮点击事件
+		$("#addAlbunmBtn").click(function(){
+			var _nAjaxTimeout = 5 * 10000;
+
+			var jqxhr = $.post("/admin/albunm_manager_add_albunm?appcode={{ appcode }}", 
+						$("#albunmForm").serialize(),
+						function(data,textStatus, jqXHR) {
+							
+							//服务器返回请求结果
+							switch(data["result_code"]){
+								case 200://get result！！
+									$("#myModal").modal("hide");
+									window.location.reload();
+									break;
+								default:
+									alert(data["result_code"]);
+									break;
+							}
+						});
+			//请求失败
+			jqxhr.error(function() { 
+				alert("添加失败"); 
+			});
+		});
+	</script>
+</body>
+</html>

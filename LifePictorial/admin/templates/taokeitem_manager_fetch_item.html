@@ -40,11 +40,11 @@
     	<div class="row">
     		<div class="col-md-3">
 				<div class="list-group" style="width:200px" data-spy="affix" data-offset-top="0" role="complementary" >
-				  <a href="/admin/taokeitem_manager?appcode={{ appcode }}" class="list-group-item">
+				  <a href="/admin/taokeitem_manager?appcode={{ appcode }}&albunm_id={{albunmId}}" class="list-group-item">
 				  	管理列表
 				  </a>
 				  <a href="#" class="list-group-item active">添加链接</a>
-				  <a href="/admin/taokeitem_manager_sort?appcode={{ appcode }}" class="list-group-item">排序</a>
+				  <a href="/admin/taokeitem_manager_sort?appcode={{ appcode }}&albunm_id={{albunmId}}" class="list-group-item">排序</a>
 				</div>
 			</div>
 			<div class="col-md-9" role="main">
@@ -120,7 +120,7 @@
 							<label for="albunm_id" class="col-sm-2 col-md-2 control-label control-label">{{ form.albunm_id.label }}</label>
 							<div class="col-md-4 col-sm-4">
 								{{ form.albunm_id }}
-								<button type="button" id="newAlbunmBtn" class="btn btn-link" data-toggle="modal" data-target="#myModal">新建图集</button>
+								<!-- <button type="button" id="newAlbunmBtn" class="btn btn-link" data-toggle="modal" data-target="#myModal">新建图集</button> -->
 							</div>
 						</div>
 						

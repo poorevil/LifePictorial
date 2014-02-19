@@ -2,8 +2,8 @@
 
 from django.shortcuts import render_to_response
 #from django.contrib import auth
-from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail,Albunm
-from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailForm,TaokeAccountForm,TaokeItemAddForm
+from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail,Albunm,Categoary
+from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailForm,TaokeAccountForm,TaokeItemAddForm,AlbunmAddForm
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
@@ -253,9 +253,20 @@ def taokeitem_manager(request):
 def taokeitem_manager_sort(request):
     ''' 用于添加淘客url '''
     appcode = request.GET.get('appcode','')
+    albunmId = request.GET.get('albunm_id','')
+    
+    albunmObj = None
+    try:
+        albunmObj = Albunm.objects.get(id=albunmId)
+    except Exception,e:
+        print e
+        pass
+        
+    if albunmObj is None:
+        return HttpResponseRedirect('/admin/error_page')
     
     if len(appcode) >0:
-        customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
+        customItemList = list(PicDetail.objects.filter(custom_tag=1,albunm=albunmObj).order_by('order'))
         dict = {'appcode':appcode,'customItemList':customItemList}
         
         return render_to_response('admin/templates/taokeitem_sort.html',dict)
@@ -282,10 +293,18 @@ def taokeitem_manager_update_order(request,appcode):
 def taokeitem_manager_add_item(request):
     ''' 添加宝贝信息 '''
     appcode = request.GET.get('appcode','')
+    albunmId = request.GET.get('albunm_id','')
     
-#     form = None
-#     taokeapi_list = TaobaoApiDetail.objects.order_by('id')
-#     
+    albunmObj = None
+    try:
+        albunmObj = Albunm.objects.get(id=albunmId)
+    except Exception,e:
+        print e
+        pass
+        
+    if albunmObj is None:
+        return HttpResponseRedirect('/admin/error_page')
+    
     if request.method == 'POST' :
         form = TaokeItemAddForm(request.POST)
         if form.is_valid():
@@ -314,8 +333,7 @@ def taokeitem_manager_add_item(request):
     else:
         form = TaokeItemAddForm()
     
-    dict = {'appcode':appcode,'form':form}
-    
+    dict = {'appcode':appcode,'form':form,'albunmId':albunmId}
     
     return render_to_response('admin/templates/taokeitem_manager_fetch_item.html',dict)
     
@@ -338,8 +356,14 @@ def taokeitem_manager_fetch_item_detail(request,num_iid):
     
     return HttpResponse("{'result_code':400}")
 
-def taokeitem_manager_add_albunm(request):
+def albunm_manager_add_albunm(request):
     '''添加图集'''
+    appcode = request.GET.get('appcode','')
+    
+    app = App.objects.get(id=appcode)
+    if app is None:
+        return HttpResponseRedirect('/admin/error_page')
+    
     albunm_nameStr = request.POST.get("albunm_name")
     
     albunm = Albunm()
@@ -348,7 +372,96 @@ def taokeitem_manager_add_albunm(request):
     albunm.pic_amount       = 0
     albunm.order            = 99999
     albunm.state            = 0
+    albunm.categoary        = app.categoary
+    albunm.custom_tag       = 1
     
     albunm.save()
     
     return HttpResponse('''{"result_code":200}''', content_type="application/json")
+
+
+@login_required(login_url='/admin/login')
+def albunm_manager(request):
+    ''' 用于图集管理 '''
+    
+    appcode = request.GET.get('appcode','')
+    if len(appcode) >0:
+        app = None
+        try:
+            app = App.objects.get(id=appcode)
+        except Exception,e:
+            print e
+            pass
+        
+        if app is None:
+            return HttpResponseRedirect('/admin/error_page')
+        
+        if request.method == 'POST' :
+            idArray = request.POST.getlist("ids")
+            oper = request.POST.get("oper")         #操作类型，submit:上架 down:下架 del:删除
+#             print idArray
+             
+            if cmp(oper,"submit") == 0 :
+                for idStr in idArray:
+                    albunm = Albunm.objects.get(id=idStr)
+                    albunm.state = 1
+                    albunm.save()
+            elif cmp(oper,"down") == 0 :
+                for idStr in idArray:
+                    albunm = Albunm.objects.get(id=idStr)
+                    albunm.state = 0
+                    albunm.save()
+            elif cmp(oper,"del") == 0 :
+                for idStr in idArray:
+                    albunm = Albunm.objects.get(id=idStr)
+                    albunm.delete()
+            else:
+                return HttpResponseRedirect('/admin/error_page')
+             
+            return HttpResponseRedirect('/admin/albunm_manager?appcode=%s'%appcode)
+        else:
+            albunmList = list(Albunm.objects.filter(categoary=app.categoary).order_by('-last_add_time'))
+        
+        dict = {'appcode':appcode,'albunmList':albunmList}
+        
+        return render_to_response('admin/templates/albunm_manager.html',dict)
+        
+    else:
+        return HttpResponseRedirect('/admin/error_page')
+    
+@login_required(login_url='/admin/login')
+def albunm_manager_sort(request):
+    ''' 用于albunm排序 '''
+    appcode = request.GET.get('appcode','')
+    if len(appcode) >0:
+        app = None
+        try:
+            app = App.objects.get(id=appcode)
+        except Exception,e:
+            pass
+        
+        if app is None:
+            return HttpResponseRedirect('/admin/error_page')
+    
+        albunmList = list(Albunm.objects.filter(categoary=app.categoary,custom_tag=1,state=1).order_by('order'))
+        
+        dict = {'appcode':appcode,'customItemList':albunmList}
+        
+        return render_to_response('admin/templates/albunm_sort.html',dict)
+    else:
+        return HttpResponseRedirect('/admin/error_page')
+    
+@login_required(login_url='/admin/login')
+def albunm_manager_update_order(request,appcode):
+    ''' 修改排序 '''
+    #[{"item_id":"3","currOrder":0},{"item_id":"2","currOrder":2},{"item_id":"5","currOrder":3}]
+    jsonStr = request.POST.get('jsonStr','');
+    
+    jsonArray = json.loads(jsonStr)
+    
+    for dict in jsonArray:
+        albunm = Albunm.objects.get(id=dict["item_id"])
+        albunm.order = dict["currOrder"]
+        albunm.save()
+    
+    return HttpResponse("ok")

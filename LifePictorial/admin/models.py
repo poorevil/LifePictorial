@@ -25,7 +25,10 @@ class Albunm(models.Model):
     pic_amount      = models.IntegerField(null=True,blank=True,default=0)
     order           = models.IntegerField()   
     state           = models.IntegerField(default=1)                            #状态，1，发布 0，待发布
-
+    
+    categoary       = models.ForeignKey(Categoary)
+    custom_tag      = models.IntegerField(null=True,blank=True)                 #手动添加标记 1，手动添加 0、空，自动添加
+    
 '''
 CREATE TABLE "pic_detail" 
 ("pid" VARCHAR PRIMARY KEY  NOT NULL , 
@@ -122,6 +125,7 @@ class App(models.Model):
     detail          = models.CharField(max_length=100,null=True,blank=True)
     taokeAccount    = models.ForeignKey(TaokeAccount)
     taobaoApiDetail = models.ForeignKey(TaobaoApiDetail)
+    categoary       = models.ForeignKey(Categoary)
     
     def __unicode__(self):
         return self.name
