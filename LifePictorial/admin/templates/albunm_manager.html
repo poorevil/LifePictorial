@@ -55,7 +55,7 @@ body {
 					<table class="table table-hover table-condensed" style="vertical-align: center">
 						<thead>
 						<tr>
-							<td ><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
+							<td style="text-align: center;vertical-align: middle;"><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>名称</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>最后添加时间</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝数量</strong></td>
@@ -75,13 +75,31 @@ body {
 							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
-							<td style="text-align: center;vertical-align: middle;"><a href="/admin/taokeitem_manager?appcode={{ appcode }}&albunm_id={{item.id}}">详细</a></td>
+							<td style="text-align: center;vertical-align: middle;"><a onclick="event.cancelBubble=true;" href="/admin/taokeitem_manager?appcode={{ appcode }}&albunm_id={{item.id}}">详细</a></td>
 						</tr>
 						{% endfor %}
 						</tbody>
 					</table>
 				</div>
 				</form>
+
+				<div>
+					<ul class="pagination">
+						
+						
+					
+
+					  <li><a href="#">&laquo;</a></li>
+					  <li><a href="#">1</a></li>
+					  <li class="active"><a href="#">2</a></li>
+					  <li><a href="#">3</a></li>
+					  <li><a href="#">4</a></li>
+					  <li><a href="#">5</a></li>
+					  <li class="disabled"><a >...</a></li>
+					  <li><a href="#">401</a></li>
+					  <li><a href="#">&raquo;</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -214,6 +214,16 @@ def taokeitem_manager(request):
     
     appcode = request.GET.get('appcode','')
     albunm_id = request.GET.get('albunm_id','')
+    
+    albunmObj = None
+    try:
+        albunmObj = Albunm.objects.get(id=albunm_id)
+    except Exception,e:
+        pass
+    
+    if albunmObj is None:
+        return HttpResponseRedirect('/admin/error_page')
+    
     if len(appcode) >0:
         if request.method == 'POST' :
             idArray = request.POST.getlist("ids")
@@ -234,24 +244,16 @@ def taokeitem_manager(request):
                 for idStr in idArray:
                     picDetail = PicDetail.objects.get(id=idStr)
                     picDetail.delete()
+                
+                albunmObj.pic_amount -= len(idArray)
+                albunmObj.save()
             else:
                 return HttpResponseRedirect('/admin/error_page')
             
-            return HttpResponseRedirect('/admin/taokeitem_manager?appcode=%s'%appcode)
+            return HttpResponseRedirect('/admin/taokeitem_manager?appcode=%s&albunm_id=%s'%(appcode,albunm_id))
         else:
-            albunmObj = None
-            try:
-                albunmObj = Albunm.objects.get(id=albunm_id)
-            except Exception,e:
-                pass
-            
-            if albunmObj is None:
-                return HttpResponseRedirect('/admin/error_page')
-            
-            customItemList = list(PicDetail.objects.filter(custom_tag=1,albunm=albunmObj).order_by('order'))
-            
+            customItemList = list(PicDetail.objects.filter(albunm=albunmObj).order_by('-custom_tag','order'))
             dict = {'appcode':appcode,'customItemList':customItemList,'albunm':albunmObj}
-            
             return render_to_response('admin/templates/taokeitem_manager.html',dict)
         
     else:
@@ -274,8 +276,8 @@ def taokeitem_manager_sort(request):
         return HttpResponseRedirect('/admin/error_page')
     
     if len(appcode) >0:
-        customItemList = list(PicDetail.objects.filter(custom_tag=1,albunm=albunmObj).order_by('order'))
-        dict = {'appcode':appcode,'customItemList':customItemList}
+        customItemList = list(PicDetail.objects.filter(albunm=albunmObj).order_by('-custom_tag','order'))
+        dict = {'appcode':appcode,'customItemList':customItemList,'albunm':albunmObj}
         
         return render_to_response('admin/templates/taokeitem_sort.html',dict)
     else:
@@ -337,7 +339,7 @@ def taokeitem_manager_add_item(request):
             albunmObj.last_add_time = datetime.datetime.today()
             albunmObj.save()
              
-            return HttpResponseRedirect('/admin/taokeitem_manager_add_item?appcode=%s'%appcode)
+            return HttpResponseRedirect('/admin/taokeitem_manager_add_item?appcode=%s&albunm_id=%s'%(appcode,albunmId))
     else:
         form = TaokeItemAddForm()
     
@@ -392,6 +394,9 @@ def albunm_manager_add_albunm(request):
 def albunm_manager(request):
     ''' 用于图集管理 '''
     
+    '''分页'''
+    currpage = request.GET.get('currpage',0)
+    
     appcode = request.GET.get('appcode','')
     if len(appcode) >0:
         app = None
@@ -428,11 +433,10 @@ def albunm_manager(request):
              
             return HttpResponseRedirect('/admin/albunm_manager?appcode=%s'%appcode)
         else:
-            albunmList = list(Albunm.objects.filter(categoary=app.categoary).order_by('-last_add_time'))
-        
-        dict = {'appcode':appcode,'albunmList':albunmList}
-        
-        return render_to_response('admin/templates/albunm_manager.html',dict)
+            albunmList = list(Albunm.objects.filter(categoary=app.categoary).order_by('-custom_tag','order','-last_add_time')[:20])
+            totalAmount = Albunm.objects.filter(categoary=app.categoary).count()
+            dict = {'appcode':appcode,'albunmList':albunmList,'totalAmount':totalAmount,'currpage':currpage}
+            return render_to_response('admin/templates/albunm_manager.html',dict)
         
     else:
         return HttpResponseRedirect('/admin/error_page')
@@ -473,3 +477,7 @@ def albunm_manager_update_order(request,appcode):
         albunm.save()
     
     return HttpResponse("ok")
+
+
+
+

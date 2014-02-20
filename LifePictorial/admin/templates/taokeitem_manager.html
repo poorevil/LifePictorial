@@ -27,6 +27,7 @@ body {
 	<nav class="navbar navbar-default navbar-fixed-top" style="vertical-align: middle;height:18px" role="navigation">
 		<ol class="breadcrumb" style="padding-top:15px;">
 		  <li><a href="/admin/">主页</a></li>
+		  <li><a href="/admin/albunm_manager?appcode={{appcode}}">图集管理</a></li>
 		  <li class="active">淘客链接管理</li>
 		</ol>
 	</nav>
@@ -42,7 +43,7 @@ body {
 				</div>
 			</div>
 			<div class="col-md-9 col-sm-9" role="main">
-				<form action="/admin/taokeitem_manager?appcode={{appcode}}" name="taokeItemListForm" method="post">
+				<form action="/admin/taokeitem_manager?appcode={{appcode}}&albunm_id={{albunm.id}}" name="taokeItemListForm" method="post">
 					<input type="hidden" name="oper" id="oper"/>
 				<div class="panel panel-default">
 					<!-- Default panel contents -->
@@ -55,7 +56,7 @@ body {
 					<table class="table table-hover table-condensed" style="vertical-align: center">
 						<thead>
 						<tr>
-							<td ><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
+							<td style="text-align: center;vertical-align: middle;"><button type="button" id="selectAllBtn" class="btn btn-link">全选</button></td>
 							<td style="text-align: center;vertical-align: middle;"><div class="center-block"><strong>宝贝图片</strong></div></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝id</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝名称</strong></td>

@@ -55,6 +55,7 @@
 	<nav class="navbar navbar-default navbar-fixed-top" style="vertical-align: middle;height:18px" role="navigation">
 		<ol class="breadcrumb" style="padding-top:15px;">
 		  <li><a href="/admin/">主页</a></li>
+		  <li><a href="/admin/albunm_manager?appcode={{appcode}}">图集管理</a></li>
 		  <li class="active">淘客链接管理</li>
 		</ol>
 	</nav>
@@ -62,10 +63,10 @@
     	<div class="row">
     		<div class="col-md-3">
 				<div class="list-group" style="width:200px" data-spy="affix" data-offset-top="0" role="complementary" >
-				  <a href="/admin/taokeitem_manager?appcode={{ appcode }}" class="list-group-item">
+				  <a href="/admin/taokeitem_manager?appcode={{ appcode }}&albunm_id={{albunm.id}}" class="list-group-item">
 				  	管理列表
 				  </a>
-				  <a href="/admin/taokeitem_manager_add_item?appcode={{appcode}}" class="list-group-item">添加链接</a>
+				  <a href="/admin/taokeitem_manager_add_item?appcode={{appcode}}&albunm_id={{albunm.id}}" class="list-group-item">添加链接</a>
 				  <a href="#" class="list-group-item active">排序</a>
 				</div>
 			</div>
