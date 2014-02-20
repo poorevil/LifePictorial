@@ -61,8 +61,8 @@ class TaokeItemAddForm(forms.Form):
     taoke_price     = forms.CharField(label='宝贝价格',max_length=200) 
     pic_desc        = forms.CharField(label='宝贝描述',required=False,max_length=500) 
     taoke_url       = forms.URLField(label='宝贝详情地址',max_length=500) 
-    categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
-                                        ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
+#     categoary_id    = forms.ChoiceField(label='所属分类',widget=forms.Select
+#                                         ,choices=tuple(tuple([p.id, p.title]) for p in Categoary.objects.order_by('id')))  
     albunm_id       = forms.ChoiceField(label='所属图集',widget=forms.Select
                                         ,choices=tuple(tuple([p.id, p.albunm_name]) for p in (Albunm.objects.order_by('-last_add_time')[:20]))) 
     

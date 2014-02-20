@@ -213,13 +213,12 @@ def taokeitem_manager(request):
     ''' 用于添加淘客url '''
     
     appcode = request.GET.get('appcode','')
+    albunm_id = request.GET.get('albunm_id','')
     if len(appcode) >0:
         if request.method == 'POST' :
             idArray = request.POST.getlist("ids")
             oper = request.POST.get("oper")         #操作类型，submit:上架 down:下架 del:删除
             print idArray
-            
-            
             
             if cmp(oper,"submit") == 0 :
                 for idStr in idArray:
@@ -240,9 +239,18 @@ def taokeitem_manager(request):
             
             return HttpResponseRedirect('/admin/taokeitem_manager?appcode=%s'%appcode)
         else:
-            customItemList = list(PicDetail.objects.filter(custom_tag=1).order_by('order'))
+            albunmObj = None
+            try:
+                albunmObj = Albunm.objects.get(id=albunm_id)
+            except Exception,e:
+                pass
             
-            dict = {'appcode':appcode,'customItemList':customItemList}
+            if albunmObj is None:
+                return HttpResponseRedirect('/admin/error_page')
+            
+            customItemList = list(PicDetail.objects.filter(custom_tag=1,albunm=albunmObj).order_by('order'))
+            
+            dict = {'appcode':appcode,'customItemList':customItemList,'albunm':albunmObj}
             
             return render_to_response('admin/templates/taokeitem_manager.html',dict)
         
@@ -310,24 +318,24 @@ def taokeitem_manager_add_item(request):
         if form.is_valid():
             cd = form.cleaned_data
             
-            albunm = Albunm.objects.get(id=cd['albunm_id'])
-            if albunm is not None:
-                picDetail = PicDetail(pic_path=cd['pic_path'],
-                                      pid=time.time(),
-                                      categoary_id=cd['categoary_id'],
-                                      taoke_num_iid=cd['num_iid'],
-                                      taoke_title=cd['taoke_title'],
-                                      taoke_price=cd['taoke_price'],
-                                      pic_desc=cd['pic_desc'],
-                                      taoke_url=cd['taoke_url'],
-                                      custom_tag=1,
-                                      albunm_id=cd['albunm_id'],
-                                      order=0)
-                picDetail.save()
-                
-                albunm.pic_amount += 1
-                albunm.last_add_time = datetime.datetime.today()
-                albunm.save()
+#             albunm = Albunm.objects.get(id=cd['albunm_id'])
+#             if albunm is not None:
+            picDetail = PicDetail(pic_path=cd['pic_path'],
+                                  pid=time.time(),
+                                  categoary=albunmObj,
+                                  taoke_num_iid=cd['num_iid'],
+                                  taoke_title=cd['taoke_title'],
+                                  taoke_price=cd['taoke_price'],
+                                  pic_desc=cd['pic_desc'],
+                                  taoke_url=cd['taoke_url'],
+                                  custom_tag=1,
+                                  albunm_id=cd['albunm_id'],
+                                  order=0)
+            picDetail.save()
+            
+            albunmObj.pic_amount += 1
+            albunmObj.last_add_time = datetime.datetime.today()
+            albunmObj.save()
              
             return HttpResponseRedirect('/admin/taokeitem_manager_add_item?appcode=%s'%appcode)
     else:
