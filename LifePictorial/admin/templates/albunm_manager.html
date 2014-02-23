@@ -50,6 +50,18 @@ body {
 						<button type="button" id="submitBtn" class="btn btn-primary">发布</button>
 						<button type="button" id="downBtn" class="btn btn-primary">下架</button>
 						<button type="button" id="delBtn" class="btn btn-danger">删除</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% if albunmList.has_previous %}
+					        <a href="?appcode={{ appcode }}&currpage={{ albunmList.previous_page_number }}">previous</a>
+					    {% endif %}
+
+					    <span class="current">
+					        Page {{ albunmList.number }} of {{ albunmList.paginator.num_pages }}.
+					    </span>
+
+					    {% if albunmList.has_next %}
+					        <a href="?appcode={{ appcode }}&currpage={{ albunmList.next_page_number }}">next</a>
+					    {% endif %}
 					</div>
 					<!-- Table -->
 					<table class="table table-hover table-condensed" style="vertical-align: center">
@@ -84,11 +96,21 @@ body {
 				</form>
 
 				<div>
-					<ul class="pagination">
-						
-						
-					
+					{% if albunmList.has_previous %}
+				        <a href="?appcode={{ appcode }}&currpage={{ albunmList.previous_page_number }}">previous</a>
+				    {% endif %}
 
+				    <span class="current">
+				        Page {{ albunmList.number }} of {{ albunmList.paginator.num_pages }}.
+				    </span>
+
+				    {% if albunmList.has_next %}
+				        <a href="?appcode={{ appcode }}&currpage={{ albunmList.next_page_number }}">next</a>
+				    {% endif %}
+
+
+
+					<!-- ul class="pagination">
 					  <li><a href="#">&laquo;</a></li>
 					  <li><a href="#">1</a></li>
 					  <li class="active"><a href="#">2</a></li>
@@ -98,7 +120,7 @@ body {
 					  <li class="disabled"><a >...</a></li>
 					  <li><a href="#">401</a></li>
 					  <li><a href="#">&raquo;</a></li>
-					</ul>
+					</ul> -->
 				</div>
 			</div>
 		</div>

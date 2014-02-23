@@ -6,6 +6,7 @@ from admin.models import App,Adver,TaokeAccount,TaobaoApiDetail,PicDetail,Albunm
 from admin.forms import AppsManagerEditForm , AdverManagerForm,TaobaoApiDetailForm,TaokeAccountForm,TaokeItemAddForm,AlbunmAddForm
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import json,time,datetime
 
@@ -395,7 +396,7 @@ def albunm_manager(request):
     ''' 用于图集管理 '''
     
     '''分页'''
-    currpage = request.GET.get('currpage',0)
+    currpage = request.GET.get('currpage',1)
     
     appcode = request.GET.get('appcode','')
     if len(appcode) >0:
@@ -433,9 +434,19 @@ def albunm_manager(request):
              
             return HttpResponseRedirect('/admin/albunm_manager?appcode=%s'%appcode)
         else:
-            albunmList = list(Albunm.objects.filter(categoary=app.categoary).order_by('-custom_tag','order','-last_add_time')[:20])
-            totalAmount = Albunm.objects.filter(categoary=app.categoary).count()
-            dict = {'appcode':appcode,'albunmList':albunmList,'totalAmount':totalAmount,'currpage':currpage}
+#            albunmList = list(Albunm.objects.filter(categoary=app.categoary).order_by('-custom_tag','order','-last_add_time')[:20])
+            albunm_list = Albunm.objects.filter(categoary=app.categoary).order_by('-custom_tag','order','-last_add_time')
+            paginator = Paginator(albunm_list, 25) # Show 25 contacts per page
+            try:
+                contacts = paginator.page(currpage)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                contacts = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                contacts = paginator.page(paginator.num_pages)
+        
+            dict = {'appcode':appcode,'albunmList':contacts,'currpage':currpage}
             return render_to_response('admin/templates/albunm_manager.html',dict)
         
     else:
@@ -478,6 +489,25 @@ def albunm_manager_update_order(request,appcode):
     
     return HttpResponse("ok")
 
-
-
-
+@login_required(login_url='/admin/login')
+def taokeitem_manager_get_picdetail(request):
+    ''' 根据id获取picdetail信息 '''
+    idstr = request.GET.get('id',None)
+    
+    if idstr is not None:
+        picdetail = None
+        try:
+            picdetail = PicDetail.objects.get(id=idstr)
+        except Exception,e:
+            pass
+        
+        if picdetail is not None:
+            jsonDict = PicDetail.serialize(picdetail)
+            jsonDict["result_code"] = 208
+            
+            jsonstr = json.dumps(jsonDict)
+            return HttpResponse(jsonstr, content_type="application/json")
+            
+    return HttpResponse('''{"result_code":400}''', content_type="application/json")
+        
+    

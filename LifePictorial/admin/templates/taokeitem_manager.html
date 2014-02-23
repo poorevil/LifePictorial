@@ -73,12 +73,14 @@ body {
 							<td style="text-align: center;vertical-align: middle;"><input onclick="event.cancelBubble=true;" type="checkbox" name="ids" id="ids" value="{{item.id}}"/></td>
 							<td style="text-align: center;vertical-align: middle;"><img src='{{item.pic_path}}_100x100.jpg' width='100px' height='100px'/></td>
 							<td style="text-align: center;vertical-align: middle;">{{item.taoke_num_iid}}</td>
-							<td style="text-align: left;vertical-align: middle;max-width:150px">{{item.taoke_title}}</td>
+							<td style="text-align: left;vertical-align: middle;max-width:150px">{{item.taoke_title|default:""}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
 							<td style="text-align: center;vertical-align: middle;max-width:100px"><a onclick="event.cancelBubble=true;" class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
 							<td style="text-align: center;vertical-align: middle;">{{item.albunm.albunm_name}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
+							<td style="text-align: center;vertical-align: middle;"><button type="button" id="editBtn" class="btn" onclick="editBtnAction('{{item.id}}')">修改</button></td>
+							
 						</tr>
 						{% endfor %}
 						</tbody>
@@ -86,7 +88,76 @@ body {
 				</div>
 				</form>
 			</div>
+		</div>
+	</div>
 
+	<!-- Modal -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">修改图集</h4>
+			</div>
+			<form action="/admin/taokeitem_manager_edit_item" name="taokeItemEditForm" id="taokeItemEditForm" method="post" class="form-horizontal" role="form">
+				<input type="hidden" id="pid" name="pid"/>
+				<div class="form-group">
+					<label for="num_iid" class="col-sm-2 col-md-2 control-label">淘客id</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="num_iid" name="num_iid" placeholder="淘客id" value=""/>
+					</div>
+					<button type="button" id="fetchBtn" class="btn btn-link">抓取</button>
+				</div>
+
+				<div class="form-group">
+					<label for="pic_path" class="col-sm-2 col-md-2 control-label">图片地址</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="pic_path" name="pic_path" placeholder="图片地址" value=""/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="taoke_title" class="col-sm-2 col-md-2 control-label control-label">宝贝名称</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="taoke_title" name="taoke_title" placeholder="宝贝名称" value=""/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="taoke_price" class="col-sm-2 col-md-2 control-label control-label">商品价格</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="taoke_price" name="taoke_price" placeholder="商品价格" value=""/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="pic_desc" class="col-sm-2 col-md-2 control-label control-label">宝贝详情</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="pic_desc" name="pic_desc" placeholder="宝贝详情" value=""/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="taoke_url" class="col-sm-2 col-md-2 control-label control-label">淘客地址</label>
+					<div class="col-md-4 col-sm-4">
+						<input type="text" class="form-control" id="taoke_url" name="taoke_url" placeholder="淘客地址" value=""/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="albunm_id" class="col-sm-2 col-md-2 control-label control-label">所属图集</label>
+					<div class="col-md-4 col-sm-4">
+						<!-- 直接写死，不能改 -->
+					</div>
+				</div>
+			</form>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" id="editBtn">保存</button>
+			</div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->
@@ -152,6 +223,78 @@ body {
 			var checkboxObj = jQuery(trObj).find("input#ids")
 			checkboxObj.prop('checked',!checkboxObj.prop('checked'));
 		};
+
+		var editBtnAction = function(idstr){
+			var _nAjaxTimeout = 5 * 10000;
+
+			$.ajax({
+				type: "GET",
+				url:"/admin/taokeitem_manager_get_picdetail?id="+idstr,
+				dataType: "json",
+				cache: false,
+				timeout: _nAjaxTimeout,
+				success: function(data, textStatus, jqXHR) {
+					switch(data["result_code"]){
+						case 208://get result！！
+							
+							$('#editModal').modal('show');
+							$('input#pid').val(data['pid']);
+							$('input#num_iid').val(data['taoke_num_iid']);
+							$('input#pic_path').val(data['pic_path']);
+							$('input#taoke_title').val(data['taoke_title']);
+							$('input#taoke_price').val(data['taoke_price']);
+							$('input#pic_desc').val(data['pic_desc']);
+							$('input#taoke_url').val(data['taoke_url']);
+							break;
+						
+						default:
+							alert("result_code: "+eval(data["result_code"])+"     msg: 获取失败");
+							break;
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(textStatus);
+					
+				}
+			});
+		};
+
+		//绑定按钮点击事件
+		$("#fetchBtn").click(function(){
+			var _nAjaxTimeout = 5 * 10000;
+
+			$.ajax({
+				type: "GET",
+				url:"/admin/taokeitem_manager_fetch_item_detail/"+$('input#num_iid').val()+"/",
+				dataType: "json",
+				cache: false,
+				timeout: _nAjaxTimeout,
+				success: function(data, textStatus, jqXHR) {
+					switch(data["result_code"]){
+						case 208://get result！！
+							// alert("result_code: "+eval(data["result_code"])+"     msg: "+data["msg"]);
+							var total_results = data["tbk_items_detail_get_response"]["total_results"];
+							if(total_results > 0){
+								var tbk_item = data["tbk_items_detail_get_response"]["tbk_items"]["tbk_item"][0];
+								$("input#taoke_title").val(tbk_item["title"]);
+								$("input#pic_path").val(tbk_item["pic_url"]);
+								$("input#taoke_price").val(tbk_item["price"]);
+							}
+
+							break;
+						
+						default:
+							alert("result_code: "+eval(data["result_code"])+"     msg: 抓取失败");
+							break;
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(textStatus);
+					
+				}
+			});
+		});
+
 	</script>
 </body>
 </html>

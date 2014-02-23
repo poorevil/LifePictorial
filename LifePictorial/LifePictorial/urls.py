@@ -48,7 +48,7 @@ urlpatterns = patterns('',
     (r'^admin/albunm_manager$', 'admin.views.albunm_manager'),
     (r'^admin/albunm_manager_sort$', 'admin.views.albunm_manager_sort'),
     (r'^admin/albunm_manager_update_order/(?P<appcode>[\w\d]{0,20})/$', 'admin.views.albunm_manager_update_order'),
-    
+    (r'^admin/taokeitem_manager_get_picdetail$', 'admin.views.taokeitem_manager_get_picdetail'),
     
     
     
