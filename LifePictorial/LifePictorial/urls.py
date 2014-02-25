@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     (r'^admin/login$', 'django.contrib.auth.views.login', {'template_name': 'admin/templates/admin_login.html'}),
     (r'^admin/apps_manager$', 'admin.views.apps_manager'),
     (r'^admin/$', 'admin.views.welcome'),
+    (r'^admin$', 'admin.views.welcome'),
     (r'^admin/apps_manager_remove$', 'admin.views.apps_manager_remove'),
     (r'^admin/ads_manager$', 'admin.views.ads_manager'),
     (r'^admin/ads_manager_remove$', 'admin.views.ads_manager_remove'),
@@ -49,6 +50,7 @@ urlpatterns = patterns('',
     (r'^admin/albunm_manager_sort$', 'admin.views.albunm_manager_sort'),
     (r'^admin/albunm_manager_update_order/(?P<appcode>[\w\d]{0,20})/$', 'admin.views.albunm_manager_update_order'),
     (r'^admin/taokeitem_manager_get_picdetail$', 'admin.views.taokeitem_manager_get_picdetail'),
+    (r'^admin/taokeitem_manager_update_detail$', 'admin.views.taokeitem_manager_update_detail'),
     
     
     

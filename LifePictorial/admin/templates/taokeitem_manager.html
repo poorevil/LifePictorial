@@ -27,7 +27,7 @@ body {
 	<nav class="navbar navbar-default navbar-fixed-top" style="vertical-align: middle;height:18px" role="navigation">
 		<ol class="breadcrumb" style="padding-top:15px;">
 		  <li><a href="/admin/">主页</a></li>
-		  <li><a href="/admin/albunm_manager?appcode={{appcode}}">图集管理</a></li>
+		  <li><a href="/admin/albunm_manager?appcode={{appcode}}">{{albunm.albunm_name}}</a></li>
 		  <li class="active">淘客链接管理</li>
 		</ol>
 	</nav>
@@ -61,8 +61,8 @@ body {
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝id</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>宝贝名称</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>发布状态</strong></td>
-							<td style="text-align: center;vertical-align: middle;"><strong>宝贝详情</strong></td>
-							<td style="text-align: center;vertical-align: middle;"><strong>所属相册</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>淘客地址</strong></td>
+							<td style="text-align: center;vertical-align: middle;"><strong>宝贝描述</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>排序</strong></td>
 							<td style="text-align: center;vertical-align: middle;"><strong>所属分类</strong></td>
 						</tr>
@@ -76,10 +76,10 @@ body {
 							<td style="text-align: left;vertical-align: middle;max-width:150px">{{item.taoke_title|default:""}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.state}}</td>
 							<td style="text-align: center;vertical-align: middle;max-width:100px"><a onclick="event.cancelBubble=true;" class='title' href='{{item.taoke_url}}' target='_blank'><div class="title">{{item.taoke_url}}</div></a></td>
-							<td style="text-align: center;vertical-align: middle;">{{item.albunm.albunm_name}}</td>
+							<td style="text-align: center;vertical-align: middle;max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{item.pic_desc}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.order}}</td>
 							<td style="text-align: center;vertical-align: middle;">{{item.categoary.title}}</td>
-							<td style="text-align: center;vertical-align: middle;"><button type="button" id="editBtn" class="btn" onclick="editBtnAction('{{item.id}}')">修改</button></td>
+							<td style="text-align: center;vertical-align: middle;" onclick="event.cancelBubble=true;"><button type="button" id="editBtn" class="btn" onclick="editBtnAction('{{item.id}}')">修改</button></td>
 							
 						</tr>
 						{% endfor %}
@@ -131,7 +131,7 @@ body {
 				</div>
 
 				<div class="form-group">
-					<label for="pic_desc" class="col-sm-2 col-md-2 control-label control-label">宝贝详情</label>
+					<label for="pic_desc" class="col-sm-2 col-md-2 control-label control-label">宝贝描述</label>
 					<div class="col-md-4 col-sm-4">
 						<input type="text" class="form-control" id="pic_desc" name="pic_desc" placeholder="宝贝详情" value=""/>
 					</div>
@@ -153,7 +153,7 @@ body {
 			</form>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="button" class="btn btn-primary" id="editBtn">保存</button>
+				<button type="button" class="btn btn-primary" id="savePicBtn">保存</button>
 			</div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -236,14 +236,13 @@ body {
 				success: function(data, textStatus, jqXHR) {
 					switch(data["result_code"]){
 						case 208://get result！！
-							
 							$('#editModal').modal('show');
 							$('input#pid').val(data['pid']);
 							$('input#num_iid').val(data['taoke_num_iid']);
 							$('input#pic_path').val(data['pic_path']);
 							$('input#taoke_title').val(data['taoke_title']);
 							$('input#taoke_price').val(data['taoke_price']);
-							$('input#pic_desc').val(data['pic_desc']);
+							$('input#pic_desc').val(data['description']);
 							$('input#taoke_url').val(data['taoke_url']);
 							break;
 						
@@ -259,7 +258,68 @@ body {
 			});
 		};
 
-		//绑定按钮点击事件
+		function ismesswebsiteok(messwebsite){  
+		    var a=/(https?):\/\/([^\.\/]+)([\.]?)([^\.\/]+)([\.]?)([^\.\/]+)(\/[\w-\.\/\?\%\&\=]*)?/i;  
+		    if (!a.test(messwebsite)){  
+		        // alert("警告：网址格式不正确!");  
+		        // //这里可以写一些其他的操作，如重置表单什么的。例如下面把id为messwebsite的输入框重置为空   
+		        // $('#messwebsite').val('');  
+		        // f.messwebsite.focus();  
+		        return false;  
+		    }else{  
+		        return true;  
+		    }  
+		}  
+
+		function checkEditFormParam(){
+			if($("input#pic_path").val()==""){
+				alert("图片地址不能为空！");
+				$("input#pic_path").focus();
+				return false;
+			}
+
+			if(!ismesswebsiteok($("input#pic_path").val())){
+				alert("图片地址有误！");
+				$("input#pic_path").focus();
+				return false;
+			}
+
+			if($("input#taoke_url").val()!=""){
+				if(!ismesswebsiteok($("input#taoke_url").val())){
+					alert("淘客地址有误！");
+					$("input#taoke_url").focus();
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		//保存修改按钮
+		$("#savePicBtn").click(function(){
+			if (checkEditFormParam()) {
+				var jqxhr = $.post("/admin/taokeitem_manager_update_detail", 
+							$("#taokeItemEditForm").serialize(),
+							function(data,textStatus, jqXHR) {
+								//服务器返回请求结果
+								switch(data["result_code"]){
+									case 200://get result！！
+										$("#editModal").modal("hide");
+										// window.location.reload();
+										break;
+									default:
+										alert(data["result_code"]);
+										break;
+								}
+							});
+				//请求失败
+				jqxhr.error(function() { 
+					alert("添加失败"); 
+				});
+			}
+		});
+
+		//抓取按钮点击事件
 		$("#fetchBtn").click(function(){
 			var _nAjaxTimeout = 5 * 10000;
 
@@ -279,6 +339,8 @@ body {
 								$("input#taoke_title").val(tbk_item["title"]);
 								$("input#pic_path").val(tbk_item["pic_url"]);
 								$("input#taoke_price").val(tbk_item["price"]);
+							}else{
+								alert("店主没有加入淘客计划！！");
 							}
 
 							break;

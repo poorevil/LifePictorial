@@ -301,6 +301,33 @@ def taokeitem_manager_update_order(request,appcode):
     return HttpResponse("ok")
 
 @login_required(login_url='/admin/login')
+def taokeitem_manager_update_detail(request):
+    ''' 修改图片详情 '''
+    if request.method == 'POST' :
+        idstr = request.POST.get("pid")
+        
+        picdetail = None
+        try:
+            picdetail = PicDetail.objects.get(pid=idstr)
+        except Exception,e:
+            pass
+        
+        if picdetail is not None:
+            picdetail.taoke_num_iid = request.POST.get("num_iid","")
+            picdetail.pic_path = request.POST.get("pic_path","")
+            picdetail.taoke_title = request.POST.get("taoke_title","")
+            picdetail.taoke_price = request.POST.get("taoke_price","")
+            print picdetail.pic_desc
+            picdetail.pic_desc = request.POST.get("pic_desc","")
+            picdetail.taoke_url = request.POST.get("taoke_url","")
+            print picdetail.pic_desc
+            picdetail.save()
+            
+            return HttpResponse('''{"result_code":200}''', content_type="application/json")
+    
+    return HttpResponse('''{"result_code":400}''', content_type="application/json")
+    
+@login_required(login_url='/admin/login')
 def taokeitem_manager_add_item(request):
     ''' 添加宝贝信息 '''
     appcode = request.GET.get('appcode','')
