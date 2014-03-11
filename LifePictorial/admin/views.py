@@ -317,10 +317,8 @@ def taokeitem_manager_update_detail(request):
             picdetail.pic_path = request.POST.get("pic_path","")
             picdetail.taoke_title = request.POST.get("taoke_title","")
             picdetail.taoke_price = request.POST.get("taoke_price","")
-            print picdetail.pic_desc
             picdetail.pic_desc = request.POST.get("pic_desc","")
             picdetail.taoke_url = request.POST.get("taoke_url","")
-            print picdetail.pic_desc
             picdetail.save()
             
             return HttpResponse('''{"result_code":200}''', content_type="application/json")
