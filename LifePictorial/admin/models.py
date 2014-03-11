@@ -37,7 +37,7 @@ class Albunm(models.Model):
         return {
             "id":   obj.id,
             "albunm_name": obj.albunm_name,
-            "last_add_time": obj.last_add_time,
+            "last_add_time": obj.last_add_time.strftime('%Y-%m-%d %H:%M:%S') if isinstance(obj.last_add_time, datetime.datetime) else None,
             "pic_amount": obj.pic_amount,
             "custom_tag": obj.custom_tag,
         }

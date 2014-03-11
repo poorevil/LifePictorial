@@ -64,6 +64,10 @@ urlpatterns = patterns('',
     (r'^interface/picdetail_album_pagination$', 'interface.views.picdetail_album_pagination'),
     (r'^interface/runtime_param$', 'interface.views.runtime_param'),
     
+    #--------------interface4phone---------------
+    (r'^interface4phone/albunmlistForMainView$', 'interface4phone.views.albunmlistForMainView'),
+    
+    
     (r'^(?P<path>.*)$', 'django.views.static.serve'
      ,{'document_root': PROJECT_PATH+'/LifePictorial/static', 'show_indexes': False}),
     

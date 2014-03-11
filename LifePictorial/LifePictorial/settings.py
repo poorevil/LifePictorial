@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'admin',
     'interface',
+    'interface4phone',
 )
 
 # A sample logging configuration. The only tangible logging
