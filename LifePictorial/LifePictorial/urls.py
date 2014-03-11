@@ -66,6 +66,10 @@ urlpatterns = patterns('',
     
     #--------------interface4phone---------------
     (r'^interface4phone/albunmlistForMainView$', 'interface4phone.views.albunmlistForMainView'),
+    (r'^interface4phone/picDetailList$', 'interface4phone.views.picDetailList'),
+    (r'^interface4phone/newestPicDetailList$', 'interface4phone.views.newestPicDetailList'),
+    
+    
     
     
     (r'^(?P<path>.*)$', 'django.views.static.serve'

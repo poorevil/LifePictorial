@@ -112,3 +112,89 @@ def albunmlistForMainView(request):
         pass
     
     return HttpResponse(jsonstr, content_type="application/json")
+
+def picDetailList(request):
+    ''' 根据图集id获取所属图片 '''
+    jsonstr = '{"result_code": 500}'
+    
+    try:
+        '''分页'''
+        currpage = request.GET.get('currpage',1)
+        albunmid = request.GET.get('albunmid','')
+        albunmObj = Albunm.objects.get(id=albunmid)
+            
+        if albunmObj is not None:
+            picDetailList = PicDetail.objects.filter(albunm=albunmObj,state=1).order_by('-custom_tag','order','-time')
+            paginator = Paginator(picDetailList, 10)
+            try:
+                picDetails = paginator.page(currpage)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                picDetails = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                picDetails = paginator.page(paginator.num_pages)
+            
+            resultDict={}
+            resultDict["result_code"]=200
+            resultDict["total_count"]=paginator.count
+            
+            picDetailDictList=[]
+            for picDetailObj in picDetails.object_list:
+                
+                picDetailDictList.append(PicDetail.serialize(picDetailObj))
+                
+            resultDict["picDetail_items"]=picDetailDictList
+            jsonstr = json.dumps(resultDict)
+            
+    except:
+        pass
+    
+    return HttpResponse(jsonstr, content_type="application/json")
+
+def newestPicDetailList(request):
+    ''' 获取最新图片 '''
+    jsonstr = '{"result_code": 500}'
+    
+    try:
+        '''分页'''
+        currpage = request.GET.get('currpage',1)
+        appidStr = request.GET.get('appid','')
+        if len(appidStr) > 0:
+            appid = int(appidStr)
+            
+            app = App.objects.get(id=appid)
+            categoaryObj = app.categoary
+            
+            if categoaryObj is not None:
+                picDetailList = PicDetail.objects.filter(categoary=categoaryObj,state=1).order_by('-custom_tag','order','-time')
+                
+                paginator = Paginator(picDetailList, 10)
+                try:
+                    picDetails = paginator.page(currpage)
+                except PageNotAnInteger:
+                    # If page is not an integer, deliver first page.
+                    picDetails = paginator.page(1)
+                except EmptyPage:
+                    # If page is out of range (e.g. 9999), deliver last page of results.
+                    picDetails = paginator.page(paginator.num_pages)
+                
+                resultDict={}
+                resultDict["result_code"]=200
+                resultDict["total_count"]=paginator.count
+                
+                picDetailDictList=[]
+                for picDetailObj in picDetails.object_list:
+                    
+                    picDetailDictList.append(PicDetail.serialize(picDetailObj))
+                    
+                resultDict["picDetail_items"]=picDetailDictList
+                jsonstr = json.dumps(resultDict)
+    
+    except:
+        pass
+    
+    return HttpResponse(jsonstr, content_type="application/json")
+
+    
+
