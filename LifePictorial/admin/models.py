@@ -29,6 +29,19 @@ class Albunm(models.Model):
     categoary       = models.ForeignKey(Categoary)
     custom_tag      = models.IntegerField(null=True,blank=True)                 #手动添加标记 1，手动添加 0、空，自动添加
     
+    def __unicode__(self):
+        return self.albunm_name;
+    
+    @staticmethod
+    def serialize(obj):
+        return {
+            "id":   obj.id,
+            "albunm_name": obj.albunm_name,
+            "last_add_time": obj.last_add_time,
+            "pic_amount": obj.pic_amount,
+            "custom_tag": obj.custom_tag,
+        }
+    
 '''
 CREATE TABLE "pic_detail" 
 ("pid" VARCHAR PRIMARY KEY  NOT NULL , 
