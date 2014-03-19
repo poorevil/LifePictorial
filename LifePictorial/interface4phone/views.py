@@ -185,8 +185,12 @@ def newestPicDetailList(request):
                 
                 picDetailDictList=[]
                 for picDetailObj in picDetails.object_list:
+                    pidDetailDict = PicDetail.serialize(picDetailObj)
+                    ''' 所属图集信息 '''
+                    ownerAlbunmDict = Albunm.serialize(picDetailObj.albunm)
+                    pidDetailDict["ownerAlbunm"] = ownerAlbunmDict
                     
-                    picDetailDictList.append(PicDetail.serialize(picDetailObj))
+                    picDetailDictList.append(pidDetailDict)
                     
                 resultDict["picDetail_items"]=picDetailDictList
                 jsonstr = json.dumps(resultDict)
